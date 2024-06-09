@@ -1,6 +1,7 @@
 import csv
 import datetime
 
+
 class GestionFactura:
     FACTURAS_FILE = 'facturas.csv'
     CLIENTES_FILE = 'clientes.csv'
@@ -21,7 +22,7 @@ class GestionFactura:
         fecha_factura = datetime.datetime.now().strftime('%Y-%m-%d')
 
         # Agregar factura al archivo CSV
-        self.agregar_factura([id_factura, cliente_info['nombre'], cliente_info['documento'], fecha_factura, total_venta])
+        self.agregar_factura(id_factura, id_cliente, fecha_factura, total_venta, detalles_productos)
 
         # Devolver los detalles de la factura
         return id_factura, cliente_info, detalles_productos, total_venta
@@ -33,10 +34,21 @@ class GestionFactura:
                 return cliente
         return None
 
-    def agregar_factura(self, factura_data):
-        with open(self.FACTURAS_FILE, mode='a', newline='') as file:
+    def agregar_factura(self, id_factura, id_cliente, fecha_factura, total_factura, detalles_factura):
+        nombre_archivo = "facturas.csv"
+        
+        # Abrir el archivo en modo de adición (append) y crear un objeto escritor CSV
+        with open(nombre_archivo, mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(factura_data)
+            
+            # Escribir cada detalle de la factura en una fila separada
+            for detalle in detalles_factura:
+                nombre_producto = detalle['Producto']
+                cantidad_vendida = detalle['Cantidad']
+                precio_unitario = detalle['Precio Unitario']
+                writer.writerow([id_factura, id_cliente, fecha_factura, total_factura, nombre_producto, cantidad_vendida, precio_unitario])
+
+        print("Los detalles de la factura se han guardado en el archivo:", nombre_archivo)
 
     def obtener_id_factura(self):
         facturas = self.sistema_pos.leer_csv(self.FACTURAS_FILE)

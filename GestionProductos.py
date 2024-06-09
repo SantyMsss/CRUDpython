@@ -283,8 +283,6 @@ class GestionProductos:
 
     
     
-    
-    
 
     def configurar_interfaz(self):
         frame_botones = tk.Frame(self.root)

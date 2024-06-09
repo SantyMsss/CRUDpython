@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from GestionFactura import GestionFactura
+from InformeAnalisis import InformesAnalisis
 
 
 
@@ -22,7 +23,10 @@ class SistemaPOS:
         self.configurar_interfaz()
         self.gestion_factura = GestionFactura(self) 
         self.root.mainloop()
-        self.inicializar_archivos()
+        self.inicializar_archivos() 
+        self.InformeAnalisis = InformesAnalisis()  # Inicializar el atributo informes_analisis
+        self.root.mainloop()
+
 
     def inicializar_archivos(self):
         if not os.path.exists(self.CLIENTES_FILE):
@@ -117,6 +121,8 @@ class SistemaPOS:
     def configurar_interfaz(self):
         tk.Button(self.root, text="Gestión de Clientes", command=self.abrir_gestion_clientes, width=20, height=2).pack(pady=10)
         tk.Button(self.root, text="Gestión de Productos", command=self.abrir_gestion_productos, width=20, height=2).pack(pady=10)
+        tk.Button(self.root, text="Gestión de Facturas", command=self.abrir_gestion_crudFactura, width=20, height=2).pack(pady=10)
+        tk.Button(self.root, text="Generar Informes", command=self.abrir_gestion_informes, width=20, height=2).pack(pady=10)
 
         
 
@@ -127,6 +133,9 @@ class SistemaPOS:
     def abrir_gestion_productos(self):
         from GestionProductos import GestionProductos
         GestionProductos(self)
+    
+    def abrir_gestion_informes(self):
+        self.InformeAnalisis = InformesAnalisis(self)
         
 
     
@@ -205,6 +214,79 @@ class SistemaPOS:
         self.escribir_csv(SistemaPOS.PRODUCTOS_FILE, productos_actualizados, ['idProducto', 'nombre', 'cantidad', 'costoCompra', 'precioVenta', 'fechaVencimiento'])
 
 
+
+    def agregar_factura(self, id_factura, id_cliente, fecha_factura, total_factura, nombre_producto, cantidad_vendida, precio_unitario):
+        try:
+            # Validar los datos
+            fecha_factura = datetime.datetime.strptime(fecha_factura, '%Y-%m-%d').date()
+            total_factura = float(total_factura)
+            cantidad_vendida = int(cantidad_vendida)
+            precio_unitario = float(precio_unitario)
+        except ValueError as e:
+            messagebox.showerror("Error", f"Por favor, introduce datos válidos. Error: {e}")
+            return
+
+        # Leer las facturas existentes
+        facturas = self.leer_csv(self.FACTURAS_FILE)
+
+        # Obtener el siguiente ID de factura
+        if facturas:
+            id_factura = int(facturas[-1]['idFactura']) + 1
+
+        # Crear la nueva factura
+        nueva_factura = {
+            'idFactura': id_factura,
+            'idCliente': id_cliente,
+            'fechaFactura': fecha_factura.strftime('%Y-%m-%d'),
+            'totalFactura': total_factura,
+            'nombreProducto': nombre_producto,
+            'cantidadVendida': cantidad_vendida,
+            'precioUnitario': precio_unitario
+        }
+
+        # Agregar la factura al archivo CSV
+        facturas.append(nueva_factura)
+        self.guardar_csv(self.FACTURAS_FILE, facturas)
+        messagebox.showinfo("Información", "Factura agregada exitosamente.")
+
+    def actualizar_factura(self, id_factura, nueva_fecha_factura, nuevo_total_factura):
+        try:
+            # Validar los datos
+            nueva_fecha_factura = datetime.datetime.strptime(nueva_fecha_factura, '%Y-%m-%d').date()
+            nuevo_total_factura = float(nuevo_total_factura)
+        except ValueError as e:
+            messagebox.showerror("Error", f"Por favor, introduce datos válidos. Error: {e}")
+            return
+
+        # Leer las facturas existentes
+        facturas = self.leer_csv(self.FACTURAS_FILE)
+
+        # Actualizar la factura
+        for factura in facturas:
+            if factura['idFactura'] == id_factura:
+                factura['fechaFactura'] = nueva_fecha_factura.strftime('%Y-%m-%d')
+                factura['totalFactura'] = nuevo_total_factura
+                break
+
+        # Guardar los cambios
+        self.guardar_csv(self.FACTURAS_FILE, facturas)
+        messagebox.showinfo("Información", "Factura actualizada exitosamente.")
+
+    def eliminar_factura(self, id_factura):
+        # Leer las facturas existentes
+        facturas = self.leer_csv(self.FACTURAS_FILE)
+
+        # Eliminar la factura
+        facturas_actualizadas = [factura for factura in facturas if factura['idFactura'] != id_factura]
+        self.escribir_csv(SistemaPOS.FACTURAS_FILE, facturas_actualizadas, ['idFactura', 'idCliente', 'fechaFactura', 'totalFactura', 'nombreProducto', 'cantidadVendida', 'precioUnitario'])
+        
+        
+
+    def abrir_gestion_crudFactura(self):
+        from CrudFacturas import CrudFacturas
+        CrudFacturas(self)
+
+    
 
     
     
