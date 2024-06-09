@@ -5,6 +5,8 @@ import tkinter as tk
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from GestionFactura import GestionFactura
+
 
 
 class SistemaPOS:
@@ -18,7 +20,9 @@ class SistemaPOS:
         self.root.title("Sistema de Punto de Venta")
         self.root.geometry("600x400")  # Tamaño de la ventana principal
         self.configurar_interfaz()
+        self.gestion_factura = GestionFactura(self) 
         self.root.mainloop()
+        self.inicializar_archivos()
 
     def inicializar_archivos(self):
         if not os.path.exists(self.CLIENTES_FILE):
