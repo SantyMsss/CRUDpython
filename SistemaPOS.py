@@ -2,7 +2,6 @@ import csv
 import datetime
 import os
 import tkinter as tk
-import GestionClientes
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -35,7 +34,7 @@ class SistemaPOS:
         if not os.path.exists(self.FACTURAS_FILE):
             with open(self.FACTURAS_FILE, mode='w', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(['idFactura', 'idCliente', 'fechaFactura', 'totalFactura', 'productos'])
+                writer.writerow(['idFactura', 'idCliente', 'fechaFactura', 'totalFactura', 'producto'])
 
     def leer_csv(self, file_path):
         with open(file_path, mode='r', newline='') as file:
@@ -107,8 +106,8 @@ class SistemaPOS:
     def configurar_interfaz(self):
         tk.Button(self.root, text="Gestión de Clientes", command=self.abrir_gestion_clientes, width=20, height=2).pack(pady=10)
         tk.Button(self.root, text="Gestión de Productos", command=self.abrir_gestion_productos, width=20, height=2).pack(pady=10)
-        tk.Button(self.root, text="Generar Factura", command=self.ventana_facturas, width=20, height=2).pack(pady=10)
-        tk.Button(self.root, text="Generar Informe", command=self.ventana_informes, width=20, height=2).pack(pady=10)
+
+        
 
     def abrir_gestion_clientes(self):
         from GestionClientes import GestionClientes
@@ -117,6 +116,10 @@ class SistemaPOS:
     def abrir_gestion_productos(self):
         from GestionProductos import GestionProductos
         GestionProductos(self)
+        
+
+    
+
 
     def agregar_producto(self, nombre, cantidad, costo_compra, precio_venta, fecha_vencimiento):
         try:
@@ -191,81 +194,8 @@ class SistemaPOS:
         self.escribir_csv(SistemaPOS.PRODUCTOS_FILE, productos_actualizados, ['idProducto', 'nombre', 'cantidad', 'costoCompra', 'precioVenta', 'fechaVencimiento'])
 
 
-    def ventana_facturas(self):
-        def agregar_factura_evento():
-            id_cliente = entry_id_cliente.get()
-            productos_str = entry_productos.get()
-            productos = {}
-            for item in productos_str.split(';'):
-                id_producto, cantidad = item.split(',')
-                productos[int(id_producto)] = int(cantidad)
-            self.agregar_factura(id_cliente, productos)
 
-        ventana = tk.Toplevel()
-        ventana.title("Generar Factura")
-        ventana.geometry("400x300")  # Tamaño de la ventana de gestión de facturas
-
-        tk.Label(ventana, text="ID Cliente").pack()
-        entry_id_cliente = tk.Entry(ventana)
-        entry_id_cliente.pack()
-
-        tk.Label(ventana, text="Productos (id,cantidad;id,cantidad)").pack()
-        entry_productos = tk.Entry(ventana)
-        entry_productos.pack()
-
-        tk.Button(ventana, text="Agregar Factura", command=agregar_factura_evento).pack(pady=10)
-
-    def ventana_informes(self):
-        def generar_informe_evento():
-            fecha_inicio = entry_fecha_inicio.get()
-            fecha_fin = entry_fecha_fin.get()
-            self.generar_informe_ventas(fecha_inicio, fecha_fin)
-
-        ventana = tk.Toplevel()
-        ventana.title("Generar Informe")
-        ventana.geometry("400x300")  # Tamaño de la ventana de gestión de informes
-
-        tk.Label(ventana, text="Fecha Inicio (YYYY-MM-DD)").pack()
-        entry_fecha_inicio = tk.Entry(ventana)
-        entry_fecha_inicio.pack()
-
-        tk.Label(ventana, text="Fecha Fin (YYYY-MM-DD)").pack()
-        entry_fecha_fin = tk.Entry(ventana)
-        entry_fecha_fin.pack()
-
-        tk.Button(ventana, text="Generar Informe", command=generar_informe_evento).pack(pady=10)
-
-    def generar_informe_ventas(self, fecha_inicio, fecha_fin):
-        facturas = self.leer_csv(SistemaPOS.FACTURAS_FILE)
-        clientes = self.leer_csv(SistemaPOS.CLIENTES_FILE)
-        total_ventas = 0
-
-        informe = (
-            "Informe de Ventas\n"
-            "=================\n"
-            f"Desde: {fecha_inicio} Hasta: {fecha_fin}\n"
-            "-----------------\n"
-            "Cliente, Fecha de Factura, Número de Factura, Total de Factura\n"
-        )
-
-        for factura in facturas:
-            fecha_factura = factura['fechaFactura']
-            if fecha_inicio <= fecha_factura <= fecha_fin:
-                cliente = next((c for c in clientes if c['idCliente'] == factura['idCliente']), None)
-                if cliente:
-                    nombre_cliente = cliente['nombre']
-                else:
-                    nombre_cliente = "Desconocido"
-                total_ventas += float(factura['totalFactura'])
-                informe += f"{nombre_cliente}, {fecha_factura}, {factura['idFactura']}, {factura['totalFactura']}\n"
-
-        informe += "-----------------\n"
-        informe += f"Total de Ventas: {total_ventas}\n"
-
-        print(informe)
-
-        with open('informe_ventas.txt', 'w') as file:
-            file.write(informe)
+    
     
     def ventana_visualizar_csv(self, file_path):
         def cerrar_ventana():

@@ -13,7 +13,7 @@ class GestionProductos:
         self.sistema_pos = sistema_pos
         self.root = tk.Toplevel()
         self.root.title("Gestión de Productos")
-        self.root.geometry("1200x800")  # Tamaño de la ventana de gestión de productos
+        self.root.geometry("1200x600")  # Tamaño de la ventana de gestión de productos
         self.configurar_interfaz()
         self.actualizar_lista_productos()
         self.root.mainloop()
@@ -129,29 +129,85 @@ class GestionProductos:
         else:
             messagebox.showerror("Error", "Por favor, selecciona un producto para eliminar.")
 
+    def ventana_vender_producto(self):
+        seleccion = self.tree.selection()
+        if seleccion:
+            id_producto = self.tree.item(seleccion[0])['text']
+            productos = self.sistema_pos.leer_csv(self.PRODUCTOS_FILE)
+            datos_producto = next((producto for producto in productos if producto['idProducto'] == id_producto), None)
+            if datos_producto:
+                ventana_vender = tk.Toplevel(self.root)
+                ventana_vender.title("Vender Producto")
+
+                tk.Label(ventana_vender, text="Nombre").grid(row=0, column=0)
+                tk.Label(ventana_vender, text=datos_producto['nombre']).grid(row=0, column=1)
+
+                tk.Label(ventana_vender, text="Cantidad a vender").grid(row=1, column=0)
+                entry_cantidad_vender = tk.Entry(ventana_vender)
+                entry_cantidad_vender.grid(row=1, column=1)
+
+                btn_vender = tk.Button(ventana_vender, text="Vender", command=lambda: self.vender_producto(id_producto, entry_cantidad_vender.get(), ventana_vender))
+                btn_vender.grid(row=2, columnspan=2)
+            else:
+                messagebox.showerror("Error", "No se encontraron datos del producto.")
+        else:
+            messagebox.showerror("Error", "Por favor, selecciona un producto para vender.")
+            
+        
+
+    def vender_producto(self, id_producto, cantidad_vender, ventana):
+        try:
+            cantidad_vender = int(cantidad_vender)
+            if cantidad_vender <= 0:
+                raise ValueError("La cantidad debe ser mayor que cero.")
+
+            productos = self.sistema_pos.leer_csv(self.PRODUCTOS_FILE)
+            producto = next((p for p in productos if p['idProducto'] == id_producto), None)
+            if producto:
+                cantidad_actual = int(producto['cantidad'])
+                if cantidad_vender > cantidad_actual:
+                    raise ValueError("La cantidad a vender no puede ser mayor que la cantidad disponible.")
+
+                nueva_cantidad = cantidad_actual - cantidad_vender
+                self.sistema_pos.actualizar_producto(id_producto, producto['nombre'], nueva_cantidad, producto['costoCompra'], producto['precioVenta'], producto['fechaVencimiento'])
+                messagebox.showinfo("Información", "Venta realizada exitosamente.")
+                ventana.destroy()
+                self.actualizar_lista_productos()
+            else:
+                messagebox.showerror("Error", "Producto no encontrado.")
+        except ValueError as e:
+            messagebox.showerror("Error", f"Por favor, introduce una cantidad válida. Error: {e}")
+
     def configurar_interfaz(self):
-        self.tree = ttk.Treeview(self.root)
-        self.tree["columns"] = ("Nombre", "Cantidad", "Costo de Compra", "Precio de Venta", "Fecha de Vencimiento")
+        frame_botones = tk.Frame(self.root)
+        frame_botones.pack(side=tk.TOP, fill=tk.X)
+
+        btn_agregar = tk.Button(frame_botones, text="Agregar Producto", command=self.ventana_agregar_producto)
+        btn_agregar.pack(side=tk.LEFT)
+
+        btn_actualizar = tk.Button(frame_botones, text="Actualizar Producto", command=self.ventana_actualizar_producto)
+        btn_actualizar.pack(side=tk.LEFT)
+
+        btn_eliminar = tk.Button(frame_botones, text="Eliminar Producto", command=self.ventana_eliminar_producto)
+        btn_eliminar.pack(side=tk.LEFT)
+
+        btn_vender = tk.Button(frame_botones, text="Vender Producto", command=self.ventana_vender_producto)
+        btn_vender.pack(side=tk.LEFT)
+
+        frame_lista = tk.Frame(self.root)
+        frame_lista.pack(fill=tk.BOTH, expand=True)
+
+        self.tree = ttk.Treeview(frame_lista, columns=("Nombre", "Cantidad", "Costo de Compra", "Precio de Venta", "Fecha de Vencimiento"))
         self.tree.heading("#0", text="ID")
         self.tree.heading("Nombre", text="Nombre")
         self.tree.heading("Cantidad", text="Cantidad")
         self.tree.heading("Costo de Compra", text="Costo de Compra")
         self.tree.heading("Precio de Venta", text="Precio de Venta")
         self.tree.heading("Fecha de Vencimiento", text="Fecha de Vencimiento")
-        self.tree.pack(expand=True, fill="both")
-
-        btn_frame = tk.Frame(self.root)
-        btn_frame.pack(pady=10)
-
-        btn_agregar = tk.Button(btn_frame, text="Agregar", command=self.ventana_agregar_producto)
-        btn_agregar.grid(row=0, column=0, padx=5)
-
-        btn_actualizar = tk.Button(btn_frame, text="Actualizar", command=self.ventana_actualizar_producto)
-        btn_actualizar.grid(row=0, column=1, padx=5)
-
-        btn_eliminar = tk.Button(btn_frame, text="Eliminar", command=self.ventana_eliminar_producto)
-        btn_eliminar.grid(row=0, column=2, padx=5)
-
-if __name__ == "__main__":
-    sistema_pos = SistemaPOS.SistemaPOS()
-    GestionProductos(sistema_pos)
+        self.tree.column("#0", stretch=tk.YES)
+        self.tree.column("Nombre", stretch=tk.YES)
+        self.tree.column("Cantidad", stretch=tk.YES)
+        self.tree.column("Costo de Compra", stretch=tk.YES)
+        self.tree.column("Precio de Venta", stretch=tk.YES)
+        self.tree.column("Fecha de Vencimiento", stretch=tk.YES)
+        self.tree.pack(fill=tk.BOTH, expand=True)
