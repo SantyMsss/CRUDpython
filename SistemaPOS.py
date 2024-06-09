@@ -34,7 +34,8 @@ class SistemaPOS:
         if not os.path.exists(self.FACTURAS_FILE):
             with open(self.FACTURAS_FILE, mode='w', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(['idFactura', 'idCliente', 'fechaFactura', 'totalFactura', 'producto'])
+                writer.writerow(['idFactura', 'idCliente', 'fechaFactura', 'totalFactura', 'nombreProducto', 'cantidadVendida', 'precioUnitario'])
+
 
     def leer_csv(self, file_path):
         with open(file_path, mode='r', newline='') as file:

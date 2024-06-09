@@ -155,8 +155,9 @@ class GestionProductos:
                 messagebox.showerror("Error", "No se encontraron datos del producto.")
         else:
             messagebox.showerror("Error", "Por favor, selecciona un producto para vender.")
+            
 
-    def vender_producto(self, id_producto, cantidad_vender, ventana): 
+    def vender_producto(self, id_producto, cantidad_vender, ventana):
         try:
             cliente_id = 1  # Aquí necesitas obtener el ID del cliente de alguna manera
 
@@ -180,19 +181,20 @@ class GestionProductos:
                 # Mostrar mensaje de éxito
                 messagebox.showinfo("Información", "Compra exitosa.")
 
-                # Cerrar la ventana de venta
+                # Generar la factura con los detalles del producto vendido
                 self.gestion_factura.generar_factura(cliente_id, id_producto, cantidad_vender, producto)
+
+                # Cerrar la ventana de venta
                 ventana.destroy()
                 self.actualizar_lista_productos()
 
-                # Actualizar la lista de productos en la interfaz
-                self.actualizar_lista_productos()
             else:
                 # Mostrar mensaje de error si no hay suficiente cantidad para vender
                 messagebox.showerror("Error", "No hay suficiente cantidad disponible para vender.")
         except ValueError:
             # Mostrar mensaje de error si la cantidad a vender no es un número entero
             messagebox.showerror("Error", "Por favor, introduce una cantidad válida.")
+
 
 
             

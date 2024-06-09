@@ -10,9 +10,20 @@ class GestionFactura:
     def generar_factura(self, id_cliente, id_producto, cantidad_vender, producto):
         producto_info = self.obtener_producto_info(id_producto)
         if producto_info:
-            total_factura = float(producto_info['precioVenta']) * int(cantidad_vender)
+            cantidad_vendida = int(cantidad_vender)
+            precio_unitario = float(producto_info['precioVenta'])
+            total_factura = precio_unitario * cantidad_vendida
             fecha_factura = datetime.datetime.now().strftime('%Y-%m-%d')
-            factura_data = [self.obtener_id_factura(), id_cliente, fecha_factura, total_factura, producto_info['nombre']]
+            # Incluir nombre del producto, cantidad vendida y precio unitario en la factura
+            factura_data = [
+                self.obtener_id_factura(),
+                id_cliente,
+                fecha_factura,
+                total_factura,
+                producto_info['nombre'],
+                cantidad_vendida,
+                precio_unitario
+            ]
             self.agregar_factura(factura_data)
 
     def obtener_producto_info(self, id_producto):

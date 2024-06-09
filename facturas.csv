@@ -1,4 +1,4 @@
-idFactura,idCliente,fechaFactura,totalFactura,producto
-1,1,2024-06-08,2.0,arroz
-2,1,2024-06-08,2.0,arroz
-3,1,2024-06-08,16.0,ajo
+idFactura,idCliente,fechaFactura,totalFactura,nombreProducto,cantidadVendida,precioUnitario
+1,1,2024-06-09,8.0,ajo,2,4.0
+2,1,2024-06-09,2.0,arroz,2,1.0
+3,1,2024-06-09,12.0,ajo,3,4.0
