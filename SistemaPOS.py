@@ -46,6 +46,12 @@ class SistemaPOS:
             writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(data)
+    
+    def guardar_csv(self, file_path, data):
+        with open(file_path, 'w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=data[0].keys())
+            writer.writeheader()
+            writer.writerows(data)
 
     def agregar_cliente(self, nombre, fecha_nacimiento, documento):
         try:

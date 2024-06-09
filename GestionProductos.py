@@ -5,6 +5,7 @@ from tkcalendar import DateEntry
 from datetime import datetime
 import csv
 import SistemaPOS
+from GestionFactura import GestionFactura  # Importa la clase GestionFactura
 
 class GestionProductos:
     PRODUCTOS_FILE = 'productos.csv'
@@ -16,8 +17,10 @@ class GestionProductos:
         self.root.geometry("1200x600")  # Tamaño de la ventana de gestión de productos
         self.configurar_interfaz()
         self.actualizar_lista_productos()
+        self.gestion_factura = GestionFactura(sistema_pos)  # Inicializa gestion_factura aquí
         self.root.mainloop()
-
+        
+        
     def actualizar_lista_productos(self):
         # Limpiar el Treeview antes de actualizar
         self.tree.delete(*self.tree.get_children())
@@ -152,31 +155,47 @@ class GestionProductos:
                 messagebox.showerror("Error", "No se encontraron datos del producto.")
         else:
             messagebox.showerror("Error", "Por favor, selecciona un producto para vender.")
-            
-        
 
-    def vender_producto(self, id_producto, cantidad_vender, ventana):
+    def vender_producto(self, id_producto, cantidad_vender, ventana): 
         try:
+            cliente_id = 1  # Aquí necesitas obtener el ID del cliente de alguna manera
+
+            # Convertir la cantidad a vender a un entero
             cantidad_vender = int(cantidad_vender)
-            if cantidad_vender <= 0:
-                raise ValueError("La cantidad debe ser mayor que cero.")
 
+            # Leer la lista de productos del archivo CSV
             productos = self.sistema_pos.leer_csv(self.PRODUCTOS_FILE)
-            producto = next((p for p in productos if p['idProducto'] == id_producto), None)
-            if producto:
-                cantidad_actual = int(producto['cantidad'])
-                if cantidad_vender > cantidad_actual:
-                    raise ValueError("La cantidad a vender no puede ser mayor que la cantidad disponible.")
 
-                nueva_cantidad = cantidad_actual - cantidad_vender
-                self.sistema_pos.actualizar_producto(id_producto, producto['nombre'], nueva_cantidad, producto['costoCompra'], producto['precioVenta'], producto['fechaVencimiento'])
-                messagebox.showinfo("Información", "Venta realizada exitosamente.")
+            # Encontrar el producto correspondiente en la lista de productos
+            producto = next((p for p in productos if p['idProducto'] == id_producto), None)
+
+            # Verificar si el producto existe y hay suficiente cantidad para vender
+            if producto and int(producto['cantidad']) >= cantidad_vender:
+                # Restar la cantidad vendida del producto
+                producto['cantidad'] = str(int(producto['cantidad']) - cantidad_vender)
+
+                # Guardar la lista de productos actualizada en el archivo CSV
+                self.sistema_pos.guardar_csv(self.PRODUCTOS_FILE, productos)
+
+                # Mostrar mensaje de éxito
+                messagebox.showinfo("Información", "Compra exitosa.")
+
+                # Cerrar la ventana de venta
+                self.gestion_factura.generar_factura(cliente_id, id_producto, cantidad_vender, producto)
                 ventana.destroy()
                 self.actualizar_lista_productos()
+
+                # Actualizar la lista de productos en la interfaz
+                self.actualizar_lista_productos()
             else:
-                messagebox.showerror("Error", "Producto no encontrado.")
-        except ValueError as e:
-            messagebox.showerror("Error", f"Por favor, introduce una cantidad válida. Error: {e}")
+                # Mostrar mensaje de error si no hay suficiente cantidad para vender
+                messagebox.showerror("Error", "No hay suficiente cantidad disponible para vender.")
+        except ValueError:
+            # Mostrar mensaje de error si la cantidad a vender no es un número entero
+            messagebox.showerror("Error", "Por favor, introduce una cantidad válida.")
+
+
+            
 
     def configurar_interfaz(self):
         frame_botones = tk.Frame(self.root)
