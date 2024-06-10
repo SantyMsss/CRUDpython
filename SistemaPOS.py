@@ -19,7 +19,7 @@ class SistemaPOS:
         self.inicializar_archivos()
         self.root = tk.Tk()
         self.root.title("Sistema de Punto de Venta")
-        self.root.geometry("600x400")  # Tamaño de la ventana principal
+        self.root.geometry("600x450")  # Tamaño de la ventana principal
         self.configurar_interfaz()
         self.gestion_factura = GestionFactura(self) 
         self.root.mainloop()
@@ -91,7 +91,7 @@ class SistemaPOS:
 
         clientes.append(nuevo_cliente)
         self.escribir_csv(self.CLIENTES_FILE, clientes, ['idCliente', 'nombre', 'fechaNacimiento', 'documento'])
-        messagebox.showinfo("Información", "Cliente agregado exitosamente.")
+        
 
     def actualizar_cliente(self, id_cliente, nuevo_nombre, nueva_fecha_nacimiento, nuevo_documento):
         try:
@@ -109,7 +109,7 @@ class SistemaPOS:
                 cliente['documento'] = nuevo_documento
                 break
         self.escribir_csv(self.CLIENTES_FILE, clientes, ['idCliente', 'nombre', 'fechaNacimiento', 'documento'])
-        messagebox.showinfo("Información", "Cliente actualizado exitosamente.")
+      
 
 
     def eliminar_cliente(self, id_cliente):
@@ -119,10 +119,14 @@ class SistemaPOS:
         messagebox.showinfo("Información", f"Cliente con ID {id_cliente} eliminado exitosamente.")
 
     def configurar_interfaz(self):
+        
+        tk.Label(self.root, text="TIENDA LA QUINTA", font=("Arial", 16)).pack(pady=10)
         tk.Button(self.root, bg='black', fg='white', text="Gestión de Clientes", command=self.abrir_gestion_clientes, width=20, height=2).pack(pady=10)
         tk.Button(self.root, bg='black', fg='white', text="Gestión de Productos", command=self.abrir_gestion_productos, width=20, height=2).pack(pady=10)
         tk.Button(self.root, bg='black', fg='white', text="Gestión de Facturas", command=self.abrir_gestion_crudFactura, width=20, height=2).pack(pady=10)
         tk.Button(self.root, bg='black', fg='white', text="Generar Informes", command=self.abrir_gestion_informes, width=20, height=2).pack(pady=10)
+        tk.Button(self.root, bg='black', fg='white', text="Salir", command=self.root.quit, width=20, height=2).pack(pady=10)
+        tk.Label(self.root, text="Desarrollado por: Alejandro Lopez Ramirez \n 2359618 ", font=("Arial", 12)).pack(pady=10)
 
 
         
@@ -173,7 +177,7 @@ class SistemaPOS:
 
         productos.append(nuevo_producto)
         self.escribir_csv(self.PRODUCTOS_FILE, productos, ['idProducto', 'nombre', 'cantidad', 'costoCompra', 'precioVenta', 'fechaVencimiento'])
-        messagebox.showinfo("Información", "Producto agregado exitosamente.")
+
 
     def ventana_eliminar_producto(self):
         seleccion = self.tree.selection()
@@ -207,7 +211,7 @@ class SistemaPOS:
                 producto['fechaVencimiento'] = nueva_fecha_vencimiento.strftime('%Y-%m-%d')
                 break
         self.escribir_csv(self.PRODUCTOS_FILE, productos, ['idProducto', 'nombre', 'cantidad', 'costoCompra', 'precioVenta', 'fechaVencimiento'])
-        messagebox.showinfo("Información", "Producto actualizado exitosamente.")
+    
     
     def eliminar_producto(self, id_producto):
         productos = self.leer_csv(SistemaPOS.PRODUCTOS_FILE)
@@ -248,7 +252,7 @@ class SistemaPOS:
         # Agregar la factura al archivo CSV
         facturas.append(nueva_factura)
         self.guardar_csv(self.FACTURAS_FILE, facturas)
-        messagebox.showinfo("Información", "Factura agregada exitosamente.")
+        
 
     def actualizar_factura(self, id_factura, nueva_fecha_factura, nuevo_total_factura):
         try:
@@ -271,7 +275,7 @@ class SistemaPOS:
 
         # Guardar los cambios
         self.guardar_csv(self.FACTURAS_FILE, facturas)
-        messagebox.showinfo("Información", "Factura actualizada exitosamente.")
+       
 
     def eliminar_factura(self, id_factura):
         # Leer las facturas existentes

@@ -171,7 +171,7 @@ class GestionProductos:
             cliente_id = documento_cliente  # El documento del cliente se usa como identificador
 
             # Convertir las cantidades a vender a enteros
-            cantidades_vender = [int(cantidad) for cantidad in cantidades_vender]
+            cantidad_vender = int("".join(cantidades_vender))
 
             # Inicializar la lista de detalles de factura
             detalles_factura = []
@@ -180,7 +180,7 @@ class GestionProductos:
             productos = self.sistema_pos.leer_csv(self.PRODUCTOS_FILE)
 
             # Iterar sobre los productos seleccionados
-            for id_producto, cantidad_vender in zip(ids_productos, cantidades_vender):
+            for id_producto in ids_productos:
                 # Convertir id_producto a cadena
                 id_producto = str(id_producto)
 
@@ -211,6 +211,9 @@ class GestionProductos:
 
                     # Actualizar la lista de productos en el archivo CSV
                     self.sistema_pos.guardar_csv(self.PRODUCTOS_FILE, productos)
+
+         
+        
 
                 else:
                     # Mostrar mensaje de error si no hay suficiente cantidad para vender
