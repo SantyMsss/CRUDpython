@@ -17,6 +17,7 @@ class GestionProductos:
         self.root = tk.Toplevel()
         self.root.title("Gestión de Productos")
         self.root.geometry("1200x600")  # Tamaño de la ventana de gestión de productos
+        self.root.configure(bg='light blue')
         self.configurar_interfaz()
         self.actualizar_lista_productos()
         self.gestion_factura = GestionFactura(sistema_pos)  # Inicializa gestion_factura aquí
@@ -308,7 +309,7 @@ class GestionProductos:
             writer = csv.writer(file)
 
             # Escribir la información de la factura en el archivo CSV
-            writer.writerow(["Factura TIENDA LA QUINTA S.A:"])
+            writer.writerow(["\n\nFactura TIENDA LA QUINTA S.A:"])
             writer.writerow(["ID Factura:", id_factura])
             writer.writerow(["Cliente:", cliente_info])
             writer.writerow(["Detalles de la factura:\n ", detalles_concatenados])

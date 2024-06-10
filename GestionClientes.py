@@ -13,6 +13,7 @@ class GestionClientes:
         self.root = tk.Toplevel()
         self.root.title("Gestión de Clientes")
         self.root.geometry("800x600")  # Tamaño de la ventana de gestión de clientes
+        self.root.configure(bg='light blue')
         self.configurar_interfaz()
         self.actualizar_lista_clientes()
         self.root.mainloop()
@@ -46,10 +47,9 @@ class GestionClientes:
 
     def guardar_cliente(self, nombre, fecha_nacimiento, documento, ventana):
         self.sistema_pos.agregar_cliente(nombre, fecha_nacimiento, documento)
-        messagebox.showinfo("Información", "Cliente agregado exitosamente.")
         ventana.destroy()
         self.actualizar_lista_clientes()
-
+        
     def ventana_actualizar_cliente(self):
         seleccion = self.tree.selection()
         if seleccion:

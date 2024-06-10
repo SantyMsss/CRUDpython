@@ -2,7 +2,6 @@ import csv
 import datetime
 import os
 import tkinter as tk
-import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from GestionFactura import GestionFactura
@@ -19,14 +18,15 @@ class SistemaPOS:
         self.inicializar_archivos()
         self.root = tk.Tk()
         self.root.title("Sistema de Punto de Venta")
-        self.root.geometry("600x450")  # Tamaño de la ventana principal
+        self.root.geometry("450x400")  # Tamaño de la ventana principal
+        self.root.configure(bg='light blue')
         self.configurar_interfaz()
         self.gestion_factura = GestionFactura(self) 
         self.root.mainloop()
         self.inicializar_archivos() 
-        self.InformeAnalisis = InformesAnalisis()  # Inicializar el atributo informes_analisis
-        self.root.mainloop()
-
+       
+      
+        
 
     def inicializar_archivos(self):
         if not os.path.exists(self.CLIENTES_FILE):
@@ -91,7 +91,7 @@ class SistemaPOS:
 
         clientes.append(nuevo_cliente)
         self.escribir_csv(self.CLIENTES_FILE, clientes, ['idCliente', 'nombre', 'fechaNacimiento', 'documento'])
-        
+        messagebox.showinfo("Información", "Cliente agregado exitosamente.")
 
     def actualizar_cliente(self, id_cliente, nuevo_nombre, nueva_fecha_nacimiento, nuevo_documento):
         try:
@@ -120,13 +120,12 @@ class SistemaPOS:
 
     def configurar_interfaz(self):
         
-        tk.Label(self.root, text="TIENDA LA QUINTA", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self.root, text="TIENDA LA QUINTA", font=("Georgia", 16)).pack(pady=10)
         tk.Button(self.root, bg='black', fg='white', text="Gestión de Clientes", command=self.abrir_gestion_clientes, width=20, height=2).pack(pady=10)
         tk.Button(self.root, bg='black', fg='white', text="Gestión de Productos", command=self.abrir_gestion_productos, width=20, height=2).pack(pady=10)
         tk.Button(self.root, bg='black', fg='white', text="Gestión de Facturas", command=self.abrir_gestion_crudFactura, width=20, height=2).pack(pady=10)
         tk.Button(self.root, bg='black', fg='white', text="Generar Informes", command=self.abrir_gestion_informes, width=20, height=2).pack(pady=10)
-        tk.Button(self.root, bg='black', fg='white', text="Salir", command=self.root.quit, width=20, height=2).pack(pady=10)
-        tk.Label(self.root, text="Desarrollado por: Alejandro Lopez Ramirez \n 2359618 ", font=("Arial", 12)).pack(pady=10)
+        tk.Label(self.root, text="Desarrollado por: Alejandro Lopez Ramirez \n 2359618 - Univalle ", font=("Courier", 11)).pack(pady=10)
 
 
         
@@ -334,5 +333,6 @@ class SistemaPOS:
       
 if __name__ == "__main__":
     SistemaPOS()
+    
 
 

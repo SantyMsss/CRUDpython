@@ -1,6 +1,6 @@
 idProducto,nombre,cantidad,costoCompra,precioVenta,fechaVencimiento
 1,Papas W,0,44.0,1.0,2024-06-04
-2,CocaCola,59,2.0,4.0,2025-06-12
-3,Bananas Ginger,0,24.0,55.0,2025-06-19
-4,Agua Central,360,5.0,8.0,2024-06-09
-5,Arroz x libra,4,2.0,4.0,2027-06-18
+2,CocaCola,750,2.0,4.0,2025-06-12
+3,Bananas Ginger,238,24.0,0.5,2025-06-19
+4,Agua Central,190,5.0,8.0,2024-06-09
+5,Bonice,42,0.5,4.0,2027-06-18

@@ -10,9 +10,16 @@ class InformesAnalisis:
         self.sistema_pos = sistema_pos
         self.root = tk.Toplevel()
         self.root.title("Informes y Análisis")
+        self.root.geometry("300x200")
+        self.root.configure(bg='light blue')
         self.configurar_interfaz()
         self.root.mainloop()
+       
 
+            
+            
+            
+            
     def configurar_interfaz(self):
         # Configuración de la interfaz gráfica
         self.frame = tk.Frame(self.root)
@@ -52,6 +59,8 @@ class InformesAnalisis:
 
         self.mostrar_informe(productos_baja_rotacion, 'Informe de Productos con Baja Rotación')
 
+    
+    
     def generar_informe_ventas_rango(self):
         def obtener_rango():
             fecha_inicio = cal_inicio.get_date()
@@ -72,17 +81,19 @@ class InformesAnalisis:
         btn_generar = tk.Button(ventana_rango, text="Generar Informe", command=obtener_rango)
         btn_generar.grid(row=2, columnspan=2, pady=10)
 
-
     def informe_ventas_rango(self, fecha_inicio, fecha_fin, ventana):
         ventas = self.sistema_pos.leer_csv(self.sistema_pos.FACTURAS_FILE)
         informes_ventas = []
         sumatoria_total = 0
+        facturas_sumadas = set()  # Mantener un registro de los ID de facturas ya sumadas
 
         for venta in ventas:
             fecha_venta = datetime.strptime(venta['fechaFactura'], '%Y-%m-%d').date()
             if fecha_inicio <= fecha_venta <= fecha_fin:
                 informes_ventas.append(venta)
-                sumatoria_total += float(venta['totalFactura'])
+                if venta['idFactura'] not in facturas_sumadas:
+                    sumatoria_total += float(venta['totalFactura'])
+                    facturas_sumadas.add(venta['idFactura'])
 
         self.mostrar_informe(informes_ventas, f'Informe de Ventas desde {fecha_inicio} hasta {fecha_fin}', sumatoria_total)
         ventana.destroy()
@@ -108,6 +119,12 @@ class InformesAnalisis:
             btn_guardar_txt.pack(side=tk.LEFT, padx=5, pady=5)
         else:
             text_area.insert(tk.END, "No se encontraron datos para el informe.\n")
+
+    
+    
+    
+    
+    
 
     def guardar_informe(self, data, file_type):
         file_extension = f".{file_type}"
