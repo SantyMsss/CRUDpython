@@ -1,7 +1,19 @@
 Factura TIENDA LA QUINTA S.A:
 ID Factura:,1
-Cliente:,"{'idCliente': '1', 'nombre': 'pedro', 'fechaNacimiento': '2024-06-13', 'documento': '11'}"
+Cliente:,"{'idCliente': '1', 'nombre': 'pedrojose', 'fechaNacimiento': '2024-06-13', 'documento': '11'}"
 "Detalles de la factura:
- ","{'Producto': 'arroz', 'Cantidad': 2, 'Precio Unitario': '1.0', 'Subtotal': 2.0}
-{'Producto': 'ajo', 'Cantidad': 5, 'Precio Unitario': '4.0', 'Subtotal': 20.0}"
-Total:,22.0
+ ","{'Producto': 'CocaCola', 'Cantidad': 3, 'Precio Unitario': '4.0', 'Subtotal': 12.0}"
+Total:,12.0
+Factura TIENDA LA QUINTA S.A:
+ID Factura:,2
+Cliente:,"{'idCliente': '1', 'nombre': 'pedrojose', 'fechaNacimiento': '2024-06-13', 'documento': '11'}"
+"Detalles de la factura:
+ ","{'Producto': 'Agua Central', 'Cantidad': 3, 'Precio Unitario': '8.0', 'Subtotal': 24.0}
+{'Producto': 'Arroz x libra', 'Cantidad': 1, 'Precio Unitario': '4.0', 'Subtotal': 4.0}"
+Total:,28.0
+Factura TIENDA LA QUINTA S.A:
+ID Factura:,3
+Cliente:,"{'idCliente': '1', 'nombre': 'pedrojose', 'fechaNacimiento': '2024-06-13', 'documento': '11'}"
+"Detalles de la factura:
+ ",
+Total:,0

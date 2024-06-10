@@ -119,10 +119,11 @@ class SistemaPOS:
         messagebox.showinfo("Información", f"Cliente con ID {id_cliente} eliminado exitosamente.")
 
     def configurar_interfaz(self):
-        tk.Button(self.root, text="Gestión de Clientes", command=self.abrir_gestion_clientes, width=20, height=2).pack(pady=10)
-        tk.Button(self.root, text="Gestión de Productos", command=self.abrir_gestion_productos, width=20, height=2).pack(pady=10)
-        tk.Button(self.root, text="Gestión de Facturas", command=self.abrir_gestion_crudFactura, width=20, height=2).pack(pady=10)
-        tk.Button(self.root, text="Generar Informes", command=self.abrir_gestion_informes, width=20, height=2).pack(pady=10)
+        tk.Button(self.root, bg='black', fg='white', text="Gestión de Clientes", command=self.abrir_gestion_clientes, width=20, height=2).pack(pady=10)
+        tk.Button(self.root, bg='black', fg='white', text="Gestión de Productos", command=self.abrir_gestion_productos, width=20, height=2).pack(pady=10)
+        tk.Button(self.root, bg='black', fg='white', text="Gestión de Facturas", command=self.abrir_gestion_crudFactura, width=20, height=2).pack(pady=10)
+        tk.Button(self.root, bg='black', fg='white', text="Generar Informes", command=self.abrir_gestion_informes, width=20, height=2).pack(pady=10)
+
 
         
 

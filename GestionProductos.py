@@ -162,6 +162,7 @@ class GestionProductos:
                 messagebox.showerror("Error", "No se encontraron datos del producto.")
         else:
             messagebox.showerror("Error", "Por favor, selecciona un producto para vender.")
+
             
             
             
@@ -238,6 +239,27 @@ class GestionProductos:
                     self.imprimir_factura(id_factura, cliente_info, detalles_factura, total_venta)
                     messagebox.showinfo("Información", "Compra exitosa.")
                     ventana.destroy()
+                     
+                    total_factura = 0.0
+                    # Calcular el total sumando los subtotales de todos los productos en la lista de detalles de factura
+                    if detalles_factura:
+                        total_factura = sum(detalle['Subtotal'] for detalle in detalles_factura)
+
+                     # Mostrar ventana para ingresar el monto con el que paga el cliente
+                    ventana_pago = tk.Toplevel(self.root)
+                    ventana_pago.title("Pago del Cliente")
+
+                    tk.Label(ventana_pago, text="Total de la Factura:").grid(row=0, column=0)
+                    tk.Label(ventana_pago, text=total_factura).grid(row=0, column=1)
+
+                    tk.Label(ventana_pago, text="Monto Pagado:").grid(row=1, column=0)
+                    entry_monto_pagado = tk.Entry(ventana_pago)
+                    entry_monto_pagado.grid(row=1, column=1)
+
+                    btn_calcular_cambio = tk.Button(ventana_pago, text="Calcular Cambio", command=lambda: self.calcular_cambio(total_factura, entry_monto_pagado.get(), ventana_pago))
+                    btn_calcular_cambio.grid(row=2, columnspan=2)
+                                            
+                    
                 else:
                     messagebox.showerror("Error", "No se pudo generar la factura.")
 
@@ -254,10 +276,20 @@ class GestionProductos:
 
     
   
- 
+    def calcular_cambio(self, total_factura, monto_pagado, ventana):
+        try:
+            monto_pagado = float(monto_pagado)
+            if monto_pagado < total_factura:
+                messagebox.showerror("Error", "El monto pagado es insuficiente.")
+            else:
+                cambio = monto_pagado - total_factura
+                messagebox.showinfo("Cambio", f"Su cambio es: {cambio}")
+                ventana.destroy()
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, introduzca un monto válido.")
 
-            
-                    
+                
+                        
             
             
     
